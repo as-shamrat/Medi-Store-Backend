@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enums
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum OrderStatus {
+    PENDING
+    SHIPPED
+    CANCELLED
+    DELIVERED
+    CONFIRMED
+}
+
+// Models
+
+model User {
+  id            String      @id
+  name          String
+  email         String
+  role          Role        @default(CUSTOMER)
+  status        UserStatus  @default(ACTIVE)
+  phone         String?
+  address       String?
+  emailVerified Boolean     @default(false)
+  image         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  medicines     Medicine[]  @relation("SellerMedicines")
+  orderItems    OrderItem[] @relation("SellerOrderItems")
+  orders        Order[]     @relation("CustomerOrders")
+  reviews       Review[]
+
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+
+model Review {
+  id         String   @id @default(uuid())
+  customerId String
+  medicineId String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  customer   User     @relation(fields: [customerId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+  @@unique([customerId, medicineId])
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  medicineId String
+  sellerId   String
+  quantity   Int
+  price      Float
+
+  order      Order    @relation(fields: [orderId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  seller     User     @relation("SellerOrderItems", fields: [sellerId], references: [id])
+
+  @@unique([orderId, medicineId])
+}
+
+model Medicine {
+  id           String      @id @default(uuid())
+  name         String
+  description  String?
+  price        Float
+  manufacturer String
+  stock        Int
+
+  categoryId   String
+  sellerId     String
+
+  category     Category    @relation(fields: [categoryId], references: [id])
+  seller       User        @relation("SellerMedicines", fields: [sellerId], references: [id])
+
+  orderItems   OrderItem[]
+  reviews      Review[]
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([name])
+  @@index([price])
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String
+  description String?
+  createdAt DateTime   @default(now())
+
+  medicines Medicine[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  customerId  String
+  customer    User        @relation("CustomerOrders", fields: [customerId], references: [id])
+  totalPrice  Float
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+
+  items       OrderItem[]
+}
