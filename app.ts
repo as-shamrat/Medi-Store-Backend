@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express'
 import { auth } from './lib/auth';
 
 import adminRouter from './admin/adminRouter'
+import categoryRouter from './category/categoryRouter'
 
 const app = express()
 
@@ -23,5 +24,6 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json())
 
 app.use('/api/admin', adminRouter)
+app.use('/api/categories', categoryRouter)
 
 export default app;
