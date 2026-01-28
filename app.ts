@@ -2,6 +2,8 @@ import { toNodeHandler } from 'better-auth/node';
 import express, { Request, Response } from 'express'
 import { auth } from './lib/auth';
 
+import adminRouter from './admin/adminRouter'
+
 const app = express()
 
 app.get('/api/auth/me', async (req: Request, res: Response) => {
@@ -18,5 +20,8 @@ app.get('/api/auth/me', async (req: Request, res: Response) => {
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
+app.use(express.json())
+
+app.use('/api/admin', adminRouter)
 
 export default app;
