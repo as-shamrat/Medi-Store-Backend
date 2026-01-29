@@ -23,7 +23,20 @@ async function getOrders(userId: string, payload: { page?: string, limit?: strin
         }
     })
 }
-async function getOrderById() { }
+async function getOrderById(orderId: string) {
+    return await prisma.order.findUnique({
+        where: { id: orderId }, select: {
+            id: true,
+            totalPrice: true,
+            address: true,
+            status: true,
+            customerId: true,
+            customer: {
+                select: { name: true, email: true }
+            }
+        }
+    })
+}
 async function createOrder(userId: string, payload: { address: string, items: { medicineId: string, quantity: number }[] }) {
     console.log('UserId: ', userId, 'Items: ', payload.items, 'Address: ', payload.address)
     const { address, items } = payload

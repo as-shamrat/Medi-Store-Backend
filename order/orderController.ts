@@ -18,7 +18,21 @@ async function getOrders(req: Request, res: Response, next: NextFunction) {
         next(error)
     }
 }
-async function getOrderById(req: Request, res: Response, next: NextFunction) { }
+async function getOrderById(req: Request, res: Response, next: NextFunction) {
+    try {
+        const userId = req?.user?.id
+        const id = req.params.id;
+        const order = await orderService.getOrderById(id as string)
+        if (order?.customerId !== userId) {
+            return res.status(403).json({ message: 'forbidden' })
+        }
+        res.status(200).json({ success: true, message: 'Order fetched successfully', data: order })
+    }
+    catch (error: any) {
+        console.log('Error at fetching single order: ', error)
+        next(error)
+    }
+}
 async function createOrder(req: Request, res: Response, next: NextFunction) {
     try {
         // console.log('User: ', req.user)
