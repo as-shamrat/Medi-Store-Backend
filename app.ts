@@ -5,6 +5,7 @@ import { auth } from './lib/auth';
 import adminRouter from './admin/adminRouter'
 import categoryRouter from './category/categoryRouter'
 import medicineRouter from './medicine/medicineRouter'
+import orderRouter from './order/orderRouter'
 
 const app = express()
 
@@ -27,5 +28,6 @@ app.use(express.json())
 app.use('/api/admin', adminRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/medicines', medicineRouter)
+app.use('/api/orders', orderRouter)
 
 export default app;

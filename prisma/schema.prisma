@@ -118,20 +118,7 @@ model Review {
   @@unique([customerId, medicineId])
 }
 
-model OrderItem {
-  id         String   @id @default(uuid())
-  orderId    String
-  medicineId String
-  sellerId   String
-  quantity   Int
-  price      Float
 
-  order      Order    @relation(fields: [orderId], references: [id])
-  medicine   Medicine @relation(fields: [medicineId], references: [id])
-  seller     User     @relation("SellerOrderItems", fields: [sellerId], references: [id])
-
-  @@unique([orderId, medicineId])
-}
 
 model Medicine {
   id           String      @id @default(uuid())
@@ -166,11 +153,27 @@ model Category {
   medicines Medicine[]
 }
 
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  medicineId String
+  sellerId   String
+  quantity   Int
+  price      Float
+
+  order      Order    @relation(fields: [orderId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  seller     User     @relation("SellerOrderItems", fields: [sellerId], references: [id])
+
+  @@unique([orderId, medicineId])
+}
+
 model Order {
   id          String      @id @default(uuid())
   customerId  String
   customer    User        @relation("CustomerOrders", fields: [customerId], references: [id])
   totalPrice  Float
+  address     String
   status      OrderStatus @default(PENDING)
   createdAt   DateTime    @default(now())
 
