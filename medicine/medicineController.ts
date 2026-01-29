@@ -3,9 +3,9 @@ import { medicineService } from "./medicineService";
 
 async function getAllMedicines(req: Request, res: Response, next: NextFunction) {
     console.log('Query: ', req.query)
-    const { search } = req.query || '';
+    const { search, page, limit } = req.query || '';
     try {
-        const medicines = await medicineService.getAllMedicines({ search: search as string });
+        const medicines = await medicineService.getAllMedicines({ search: (search || '') as string, page: (page !== '0' && page || '1') as string, limit: (limit || '10') as string });
         res.status(200).json({
             success: true,
             message: 'medicines fetched successfully',
