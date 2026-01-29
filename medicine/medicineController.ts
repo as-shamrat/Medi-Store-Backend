@@ -2,8 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { medicineService } from "./medicineService";
 
 async function getAllMedicines(req: Request, res: Response, next: NextFunction) {
+    console.log('Query: ', req.query)
+    const { search } = req.query || '';
     try {
-        const medicines = await medicineService.getAllMedicines();
+        const medicines = await medicineService.getAllMedicines({ search: search as string });
         res.status(200).json({
             success: true,
             message: 'medicines fetched successfully',
