@@ -7,10 +7,25 @@ async function getSellerOrders(req: Request, res: Response, next: NextFunction) 
         const { page = '1', limit = '10' } = req.query
         const orders = await sellerService.getSellerOrders(sellerId as string, { page: page as string, limit: limit as string })
         // console.log({ orders })
-        res.status(200).json({ success: true, message: 'Orders fetched successfully', data: orders })
+        res.status(200).json({ success: true, message: 'Orders fetched successfully', data: orders, meta: { page, limit } })
     }
     catch (error: any) {
         console.log('Error at fetching orders: ', error)
+        next(error)
+    }
+}
+
+async function updateOrder(req: Request, res: Response, next: NextFunction) {
+    try {
+        const sellerId = req.user?.id;
+        const orderId = req.params.id
+        if (!('status' in req.body)) {
+            throw new Error('JSON body required status field')
+        }
+        const updatedOrder = await sellerService.updateOrder(sellerId as string, orderId as string, req.body)
+        res.status(200).json({ success: true, message: 'Order updated successfully', data: updatedOrder })
+    }
+    catch (error: any) {
         next(error)
     }
 }
@@ -71,4 +86,4 @@ async function deleteMedicine(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export const sellerController = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders }
+export const sellerController = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders, updateOrder }

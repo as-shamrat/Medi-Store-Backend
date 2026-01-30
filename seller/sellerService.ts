@@ -1,15 +1,34 @@
 
 import { prisma } from "../lib/prisma"
 
+async function updateOrder(sellerId: string, orderId: string, data: { status: 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'CONFIRMED' }) {
+    const order = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: { items: { select: { sellerId: true } } }
+    })
+    console.log(order)
+    const isSeller = order?.items.some(item => item.sellerId === sellerId)
+    if (!isSeller) {
+        throw new Error('You are not authorized to modify this order.')
+    }
+
+    return await prisma.order.update({ where: { id: orderId }, data: { status: data.status } })
+}
+
 async function getSellerOrders(sellerId: string, payload: { page: string, limit: string }) {
     console.log({ sellerId })
+    const skip = (Number(payload.page) - 1) * Number(payload.limit)
+    const take = Number(payload.limit)
     const orders = await prisma.order.findMany({
         where: {
             items: {
                 some: { sellerId: sellerId }
             }
         },
+        skip: skip,
+        take: take,
         select: {
+            id: true,
             items: {
                 where: { sellerId: sellerId },
                 select: { medicine: { select: { name: true } }, price: true, quantity: true }
@@ -64,4 +83,4 @@ async function deleteMedicine(sellerId: string, medicineId: string) {
     return await prisma.medicine.delete({ where: { id: medicineId } });
 }
 
-export const sellerService = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders }
+export const sellerService = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders, updateOrder }
