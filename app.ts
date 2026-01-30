@@ -6,6 +6,7 @@ import adminRouter from './admin/adminRouter'
 import categoryRouter from './category/categoryRouter'
 import medicineRouter from './medicine/medicineRouter'
 import orderRouter from './order/orderRouter'
+import sellerRouter from './seller/sellerRouter'
 
 const app = express()
 
@@ -29,5 +30,6 @@ app.use('/api/admin', adminRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/medicines', medicineRouter)
 app.use('/api/orders', orderRouter)
+app.use('/api/seller', sellerRouter)
 
 export default app;
