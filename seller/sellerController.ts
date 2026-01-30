@@ -39,5 +39,22 @@ async function updateMedicine(req: Request, res: Response, next: NextFunction) {
         next(error)
     }
 }
+async function deleteMedicine(req: Request, res: Response, next: NextFunction) {
+    try {
+        const medicineId = req.params.id;
+        const sellerId = req.user?.id;
 
-export const sellerController = { addMedicine, updateMedicine }
+        const response = await sellerService.deleteMedicine(sellerId as string, medicineId as string)
+        console.log({ response })
+        res.status(200).json({
+            success: true,
+            message: 'Medicine deleted successfully',
+        })
+    }
+    catch (error: any) {
+        console.log('Error at deleting medicine', error)
+        next(error)
+    }
+}
+
+export const sellerController = { addMedicine, updateMedicine, deleteMedicine }

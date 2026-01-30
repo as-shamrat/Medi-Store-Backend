@@ -27,4 +27,13 @@ async function updateMedicine(sellerId: string, medicineId: string, data: { pric
     return await prisma.medicine.update({ where: { id: medicineId }, data: data })
 }
 
-export const sellerService = { addMedicine, updateMedicine }
+async function deleteMedicine(sellerId: string, medicineId: string) {
+    console.log({ medicineId, sellerId })
+    const medicine = await prisma.medicine.findUnique({ where: { id: medicineId } })
+    if (medicine?.sellerId !== sellerId) {
+        throw new Error("You can not delete this medicine")
+    }
+    return await prisma.medicine.delete({ where: { id: medicineId } });
+}
+
+export const sellerService = { addMedicine, updateMedicine, deleteMedicine }
