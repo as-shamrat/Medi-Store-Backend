@@ -27,6 +27,9 @@ enum OrderStatus {
     DELIVERED
     CONFIRMED
 }
+enum ShippingMethod {
+  CASH_ON_DELIVERY
+}
 
 // Models
 
@@ -145,10 +148,10 @@ model Medicine {
 }
 
 model Category {
-  id        String     @id @default(uuid())
-  name      String
+  id          String      @id @default(uuid())
+  name        String
   description String?
-  createdAt DateTime   @default(now())
+  createdAt   DateTime    @default(now())
 
   medicines Medicine[]
 }
@@ -169,13 +172,14 @@ model OrderItem {
 }
 
 model Order {
-  id          String      @id @default(uuid())
-  customerId  String
-  customer    User        @relation("CustomerOrders", fields: [customerId], references: [id])
-  totalPrice  Float
-  address     String
-  status      OrderStatus @default(PENDING)
-  createdAt   DateTime    @default(now())
+  id              String          @id @default(uuid())
+  customerId      String
+  customer        User            @relation("CustomerOrders", fields: [customerId], references: [id])
+  totalPrice      Float
+  address         String
+  status          OrderStatus     @default(PENDING)
+  shippingMethod  ShippingMethod  @default(CASH_ON_DELIVERY)
+  createdAt       DateTime        @default(now())
 
-  items       OrderItem[]
+  items           OrderItem[]
 }

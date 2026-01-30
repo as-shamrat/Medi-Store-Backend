@@ -8,6 +8,7 @@ import medicineRouter from './medicine/medicineRouter'
 import orderRouter from './order/orderRouter'
 import sellerRouter from './seller/sellerRouter'
 import { globalErrorHandler } from './middleware/globalError';
+import { notFoundHandler } from './middleware/notFoundError';
 
 const app = express()
 
@@ -32,6 +33,7 @@ app.use('/api/categories', categoryRouter)
 app.use('/api/medicines', medicineRouter)
 app.use('/api/orders', orderRouter)
 app.use('/api/seller', sellerRouter)
+app.use(notFoundHandler)
 app.use(globalErrorHandler)
 
 export default app;
