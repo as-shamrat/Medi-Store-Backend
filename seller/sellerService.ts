@@ -1,4 +1,32 @@
+
 import { prisma } from "../lib/prisma"
+
+async function getSellerOrders(sellerId: string, payload: { page: string, limit: string }) {
+    console.log({ sellerId })
+    const orders = await prisma.order.findMany({
+        where: {
+            items: {
+                some: { sellerId: sellerId }
+            }
+        },
+        select: {
+            items: {
+                where: { sellerId: sellerId },
+                select: { medicine: { select: { name: true } }, price: true, quantity: true }
+            },
+            customer: {
+                select: { name: true, email: true, phone: true }
+            },
+            createdAt: true,
+            totalPrice: true,
+            address: true
+        }
+    })
+    const sellerTotal = orders.map(order => order.items).flat().reduce((total: number, item: any) => total + item.price * item.quantity, 0)
+    console.log({ sellerTotal })
+
+    return { orders, sellerTotal };
+}
 
 async function addMedicine(sellerId: string, data: { name: string, description: string, price: number, stock: number, manufacturer: string, categoryId: string }) {
     console.log('medicine data: ', { ...data, sellerId })
@@ -36,4 +64,4 @@ async function deleteMedicine(sellerId: string, medicineId: string) {
     return await prisma.medicine.delete({ where: { id: medicineId } });
 }
 
-export const sellerService = { addMedicine, updateMedicine, deleteMedicine }
+export const sellerService = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders }

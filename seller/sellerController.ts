@@ -1,6 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { sellerService } from "./sellerService";
 
+async function getSellerOrders(req: Request, res: Response, next: NextFunction) {
+    try {
+        const sellerId = req.user?.id;
+        const { page = '1', limit = '10' } = req.query
+        const orders = await sellerService.getSellerOrders(sellerId as string, { page: page as string, limit: limit as string })
+        // console.log({ orders })
+        res.status(200).json({ success: true, message: 'Orders fetched successfully', data: orders })
+    }
+    catch (error: any) {
+        console.log('Error at fetching orders: ', error)
+        next(error)
+    }
+}
+
 async function addMedicine(req: Request, res: Response, next: NextFunction) {
     try {
         const sellerId = req.user?.id;
@@ -57,4 +71,4 @@ async function deleteMedicine(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export const sellerController = { addMedicine, updateMedicine, deleteMedicine }
+export const sellerController = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders }

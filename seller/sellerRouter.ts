@@ -5,6 +5,8 @@ import { sellerController } from './sellerController';
 
 const router = express.Router();
 
+
+router.get("/orders", requireAuth('SELLER'), sellerController.getSellerOrders)
 router.post("/medicines", requireAuth('SELLER'), sellerController.addMedicine)
 router.put("/medicines/:id", requireAuth('SELLER'), sellerController.updateMedicine)
 router.delete("/medicines/:id", requireAuth('SELLER'), sellerController.deleteMedicine)
