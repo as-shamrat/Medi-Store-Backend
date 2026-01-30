@@ -7,7 +7,7 @@ export const requireAuth = (...roles: string[]) => {
         console.log('middleware working...')
         console.log('Roles: ', roles)
         const session = await auth.api.getSession({ headers: req.headers as HeadersInit })
-        console.log('Session: ', session)
+        // console.log('Session: ', session)
         if (!session || !session.user) {
             return res.status(401).json({ message: "Unauthenticated" });
         }
