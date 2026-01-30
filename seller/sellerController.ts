@@ -22,6 +22,10 @@ async function updateMedicine(req: Request, res: Response, next: NextFunction) {
     try {
         const medicineId = req.params.id;
         const sellerId = req.user?.id;
+        if (!req.body.price && !req.body.stock) {
+            return res.status(400).json({ success: false, message: "Provide price and/or stock" });
+        }
+
         const updatedMedicine = await sellerService.updateMedicine(sellerId as string, medicineId as string, req.body)
         console.log({ updatedMedicine })
         res.status(200).json({

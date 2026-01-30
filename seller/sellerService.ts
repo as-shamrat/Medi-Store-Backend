@@ -19,7 +19,7 @@ async function addMedicine(sellerId: string, data: { name: string, description: 
 async function updateMedicine(sellerId: string, medicineId: string, data: { price?: number, stock?: number }) {
     console.log(sellerId, medicineId, data)
     const isSeller = await prisma.medicine.findFirst({
-        where: { sellerId: sellerId }
+        where: { sellerId: sellerId, id: medicineId }
     })
     if (!isSeller) {
         throw new Error("Not authorized to update this medicine")
