@@ -6,5 +6,6 @@ import { sellerController } from './sellerController';
 const router = express.Router();
 
 router.post("/medicines", requireAuth('SELLER'), sellerController.addMedicine)
+router.put("/medicines/:id", requireAuth('SELLER'), sellerController.updateMedicine)
 
 export default router;

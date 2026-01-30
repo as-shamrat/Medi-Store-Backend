@@ -18,5 +18,21 @@ async function addMedicine(req: Request, res: Response, next: NextFunction) {
         next(error)
     }
 }
+async function updateMedicine(req: Request, res: Response, next: NextFunction) {
+    try {
+        const medicineId = req.params.id;
+        const sellerId = req.user?.id;
+        const updatedMedicine = await sellerService.updateMedicine(sellerId as string, medicineId as string, req.body)
+        res.status(200).json({
+            success: true,
+            message: 'Medicine updated successfully',
+            data: updatedMedicine
+        })
+    }
+    catch (error: any) {
+        console.log('Error at updating medicine', error)
+        next(error)
+    }
+}
 
-export const sellerController = { addMedicine }
+export const sellerController = { addMedicine, updateMedicine }

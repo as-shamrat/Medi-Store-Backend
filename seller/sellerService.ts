@@ -16,5 +16,15 @@ async function addMedicine(sellerId: string, data: { name: string, description: 
     })
     return null
 }
+async function updateMedicine(sellerId: string, medicineId: string, data: { price?: number, stock?: number }) {
+    console.log(sellerId, medicineId, data)
+    const isSeller = await prisma.medicine.findFirst({
+        where: { sellerId: sellerId }
+    })
+    if (!isSeller) {
+        throw new Error("Not authorized to update this medicine")
+    }
+    return await prisma.medicine.update({ where: { id: medicineId }, data: data })
+}
 
-export const sellerService = { addMedicine }
+export const sellerService = { addMedicine, updateMedicine }
