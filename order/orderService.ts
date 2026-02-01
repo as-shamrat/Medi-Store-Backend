@@ -33,7 +33,8 @@ async function getOrderById(orderId: string) {
             customerId: true,
             customer: {
                 select: { name: true, email: true }
-            }
+            },
+            items: { select: { medicine: { select: { name: true } }, price: true, quantity: true } }
         }
     })
 }
