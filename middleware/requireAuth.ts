@@ -4,7 +4,7 @@ import { auth } from "../lib/auth"
 
 export const requireAuth = (...roles: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        console.log('middleware working...', req.headers)
+        console.log('middleware working...', req.body)
         console.log('Roles: ', roles)
         const session = await auth.api.getSession({ headers: req.headers as HeadersInit })
         console.log('Session: ', session)

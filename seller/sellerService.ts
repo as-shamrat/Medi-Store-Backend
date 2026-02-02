@@ -43,8 +43,63 @@ async function getSellerOrders(sellerId: string, payload: { page: string, limit:
     })
     const sellerTotal = orders.map(order => order.items).flat().reduce((total: number, item: any) => total + item.price * item.quantity, 0)
     console.log({ sellerTotal })
+    const [totalOrders, pending, delivered, cancelled] =
+        await prisma.$transaction([
+            prisma.order.count({
+                where: {
+                    items: { some: { medicine: { sellerId } } },
+                },
+            }),
 
-    return { orders, sellerTotal };
+            prisma.order.count({
+                where: {
+                    status: 'PENDING',
+                    items: { some: { medicine: { sellerId } } },
+                },
+            }),
+
+            prisma.order.count({
+                where: {
+                    status: 'DELIVERED',
+                    items: { some: { medicine: { sellerId } } },
+                },
+            }),
+
+            prisma.order.count({
+                where: {
+                    status: 'CANCELLED',
+                    items: { some: { medicine: { sellerId } } },
+                },
+            }),
+        ])
+
+
+
+    return { orders, sellerTotal, stats: { totalOrders, delivered, pending, cancelled } };
+}
+
+async function getSellerOrder(sellerId: string, orderId: string) {
+    return await prisma.order.findFirst({
+        where: {
+            id: orderId,
+            items: { some: { sellerId: sellerId } }
+        },
+        select: {
+            id: true,
+            items: {
+                where: { sellerId: sellerId },
+                select: { medicine: { select: { name: true } }, price: true, quantity: true }
+            },
+            customer: {
+                select: { name: true, email: true, phone: true }
+            },
+            createdAt: true,
+            totalPrice: true,
+            address: true,
+            status: true,
+        }
+
+    })
 }
 
 async function addMedicine(sellerId: string, data: { name: string, description: string, price: number, stock: number, manufacturer: string, categoryId: string }) {
@@ -83,4 +138,9 @@ async function deleteMedicine(sellerId: string, medicineId: string) {
     return await prisma.medicine.delete({ where: { id: medicineId } });
 }
 
-export const sellerService = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders, updateOrder }
+
+async function getSellerMedicines(sellerId: string) {
+    return await prisma.medicine.findMany({ where: { sellerId: sellerId }, select: { id: true, name: true, price: true, stock: true } })
+}
+
+export const sellerService = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders, updateOrder, getSellerOrder, getSellerMedicines }

@@ -14,6 +14,19 @@ async function getSellerOrders(req: Request, res: Response, next: NextFunction) 
         next(error)
     }
 }
+async function getSellerOrder(req: Request, res: Response, next: NextFunction) {
+    try {
+        const sellerId = req.user?.id;
+        const orderId = req.params.id
+        const order = await sellerService.getSellerOrder(sellerId as string, orderId as string)
+        // console.log({ orders })
+        res.status(200).json({ success: true, message: 'Order fetched successfully', data: order })
+    }
+    catch (error: any) {
+        console.log('Error at fetching orders: ', error)
+        next(error)
+    }
+}
 
 async function updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
@@ -86,4 +99,15 @@ async function deleteMedicine(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export const sellerController = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders, updateOrder }
+async function getSellerMedicines(req: Request, res: Response, next: NextFunction) {
+    try {
+        const sellerId = req.user?.id;
+        const medicines = await sellerService.getSellerMedicines(sellerId as string)
+        res.status(200).json({ success: true, message: 'Seller medicine fetched successfully', data: medicines })
+    }
+    catch (error: any) {
+        next(error)
+    }
+}
+
+export const sellerController = { addMedicine, updateMedicine, deleteMedicine, getSellerOrders, updateOrder, getSellerOrder, getSellerMedicines }
