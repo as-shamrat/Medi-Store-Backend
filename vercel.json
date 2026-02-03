@@ -1,9 +1,7 @@
-
-
 {
-  "version": 2,
-  "headers": [
-    {
+    "version": 2,
+    "headers": [
+        {
       "source": "/api/auth/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
@@ -13,8 +11,18 @@
       ]
     }
   ],
-  "rewrites": [
-    { "source": "/api/auth/(.*)", "destination": "/dist/server.js" },
-    { "source": "/(.*)", "destination": "/dist/server.js" }
-  ]
+"builds": [
+{
+"src": "dist/server.js",
+"use": "@vercel/node"
 }
+],
+"routes": [
+  { "src": "/api/auth/(.*)", "dest": "dist/server.js" },
+{
+"src": "/(.*)",
+"dest": "/dist/server.js"
+}
+]
+}
+
