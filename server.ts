@@ -15,4 +15,5 @@ async function main() {
     }
 }
 
-// main();
+main();
+// console.log(process.env.BETTER_AUTH_URL)
