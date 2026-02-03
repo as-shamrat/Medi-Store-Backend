@@ -15,13 +15,11 @@ import { notFoundHandler } from './middleware/notFoundError';
 const app = express()
 
 app.use(cors({
-    origin: [
-        "http://localhost:3000",
-        "http://192.168.0.102:3000",
-    ],
-    credentials: true,
+    origin: "https://medistore-client-chi.vercel.app", // Your Frontend URL
+    credentials: true,                               // Allowed for Better Auth cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
 app.get('/api/auth/me', async (req: Request, res: Response) => {
     try {
         const session = await auth.api.getSession({ headers: req.headers as HeadersInit });
