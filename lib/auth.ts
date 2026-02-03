@@ -44,14 +44,29 @@ export const auth = betterAuth({
     },
     trustedOrigins: [
         "https://medistore-client-chi.vercel.app"],
-    advanced: {
-        disableOriginCheck: true,
-        defaultCookieAttributes: {
-            sameSite: "none",
-            secure: true,
-            httpOnly: true,
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 5 * 60, // 5 minutes
         },
+    },
+    advanced: {
+        cookiePrefix: "better-auth",
         useSecureCookies: true,
+        crossSubDomainCookies: {
+            enabled: false,
+        },
+        disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
     }
+
+    //   advanced: {
+    //     cookiePrefix: "better-auth",
+    //     useSecureCookies: process.env.NODE_ENV === "production",
+    //     crossSubDomainCookies: {
+    //       enabled: false,
+    //     },
+    //     disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+    //   }
+
 
 });

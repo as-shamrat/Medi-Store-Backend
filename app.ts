@@ -13,6 +13,35 @@ import { globalErrorHandler } from './middleware/globalError';
 import { notFoundHandler } from './middleware/notFoundError';
 
 const app = express()
+const allowedOrigins = [
+    "https://medistore-client-chi.vercel.app"
+].filter(Boolean); // Remove undefined values
+
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            // Allow requests with no origin (mobile apps, Postman, etc.)
+            if (!origin) return callback(null, true);
+
+            // Check if origin is in allowedOrigins or matches Vercel preview pattern
+            const isAllowed =
+                allowedOrigins.includes(origin) ||
+                /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) ||
+                /^https:\/\/.*\.vercel\.app$/.test(origin); // Any Vercel deployment
+
+            if (isAllowed) {
+                callback(null, true);
+            } else {
+                callback(new Error(`Origin ${origin} not allowed by CORS`));
+            }
+        },
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+        exposedHeaders: ["Set-Cookie"],
+    }),
+);
+
 
 // app.use(cors({
 //     origin: "https://medistore-client-chi.vercel.app", // Your Frontend URL
@@ -21,19 +50,19 @@ const app = express()
 //     allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
 // }));
 // app.options("*", cors());
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://medistore-client-chi.vercel.app');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, Cookie');
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://medistore-client-chi.vercel.app');
+//     res.setHeader('Access-Control-Allow-Credentials', 'true');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+//     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, Cookie');
 
-    // Handle the Preflight (OPTIONS) request immediately
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-    next();
-});
+//     // Handle the Preflight (OPTIONS) request immediately
+//     if (req.method === 'OPTIONS') {
+//         res.status(200).end();
+//         return;
+//     }
+//     next();
+// });
 app.get('/api/auth/me', async (req: Request, res: Response) => {
     try {
         const session = await auth.api.getSession({ headers: req.headers as HeadersInit });
