@@ -14,13 +14,26 @@ import { notFoundHandler } from './middleware/notFoundError';
 
 const app = express()
 
-app.use(cors({
-    origin: "https://medistore-client-chi.vercel.app", // Your Frontend URL
-    credentials: true,                               // Allowed for Better Auth cookies
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
-}));
-app.options("*", cors());
+// app.use(cors({
+//     origin: "https://medistore-client-chi.vercel.app", // Your Frontend URL
+//     credentials: true,                               // Allowed for Better Auth cookies
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
+// }));
+// app.options("*", cors());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://medistore-client-chi.vercel.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, Cookie');
+
+    // Handle the Preflight (OPTIONS) request immediately
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+    next();
+});
 app.get('/api/auth/me', async (req: Request, res: Response) => {
     try {
         const session = await auth.api.getSession({ headers: req.headers as HeadersInit });
