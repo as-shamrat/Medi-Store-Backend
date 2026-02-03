@@ -1,6 +1,6 @@
 import app from './app'
 import { prisma } from './lib/prisma'
-
+import './env'
 async function main() {
     try {
         await prisma.$connect();
@@ -15,4 +15,4 @@ async function main() {
     }
 }
 
-main();
+// main();
