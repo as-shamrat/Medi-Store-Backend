@@ -43,6 +43,10 @@ export const auth = betterAuth({
         }
     },
     trustedOrigins: ["http://localhost:3000",
-        "http://192.168.0.102:3000", process.env.FRONTEND_URL as string],
+        "http://192.168.0.102:3000", process.env.FRONTEND_URL as string, "https://medistore-client-chi.vercel.app"],
+    advanced: {
+        // If trustedOrigins doesn't work, this is the "Nuclear" fix for 403s
+        disableOriginCheck: true
+    }
 
 });
