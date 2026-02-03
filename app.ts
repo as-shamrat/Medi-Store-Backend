@@ -18,8 +18,9 @@ app.use(cors({
     origin: "https://medistore-client-chi.vercel.app", // Your Frontend URL
     credentials: true,                               // Allowed for Better Auth cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
 }));
+app.options("*", cors());
 app.get('/api/auth/me', async (req: Request, res: Response) => {
     try {
         const session = await auth.api.getSession({ headers: req.headers as HeadersInit });
