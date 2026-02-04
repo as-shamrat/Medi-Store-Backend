@@ -53,12 +53,11 @@ export const auth = betterAuth({
     advanced: {
         cookiePrefix: "better-auth",
         useSecureCookies: true,
-        crossSubDomainCookies: {
-            enabled: false,
-        },
-        sameSite: "none", // 👈 REQUIRED
+        crossSubDomainCookies: { enabled: false },
+        sameSite: "none", // 👈 required for cross-site cookies
         disableCSRFCheck: true,
     }
+
     // advanced: {
     //     cookiePrefix: "better-auth",
     //     useSecureCookies: true,
