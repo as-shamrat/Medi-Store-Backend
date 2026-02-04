@@ -9,7 +9,7 @@ import '../env'
 
 
 export const auth = betterAuth({
-    baseURL: process.env.BETTER_AUTH_URL,
+    baseURL: "https://medi-store-phi.vercel.app",
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
@@ -56,8 +56,17 @@ export const auth = betterAuth({
         crossSubDomainCookies: {
             enabled: false,
         },
-        disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+        sameSite: "none", // 👈 REQUIRED
+        disableCSRFCheck: true,
     }
+    // advanced: {
+    //     cookiePrefix: "better-auth",
+    //     useSecureCookies: true,
+    //     crossSubDomainCookies: {
+    //         enabled: false,
+    //     },
+    //     disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+    // }
 
     //   advanced: {
     //     cookiePrefix: "better-auth",

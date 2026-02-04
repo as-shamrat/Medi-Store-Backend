@@ -14,8 +14,10 @@ import { notFoundHandler } from './middleware/notFoundError';
 
 const app = express()
 const allowedOrigins = [
-    "https://medistore-client-chi.vercel.app"
-].filter(Boolean); // Remove undefined values
+    "https://medistore-client-chi.vercel.app",
+];
+
+
 
 app.use(
     cors({
@@ -26,8 +28,7 @@ app.use(
             // Check if origin is in allowedOrigins or matches Vercel preview pattern
             const isAllowed =
                 allowedOrigins.includes(origin) ||
-                /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) ||
-                /^https:\/\/.*\.vercel\.app$/.test(origin); // Any Vercel deployment
+                /^https:\/\/medistore-client-chi-.*\.vercel\.app$/.test(origin);
 
             if (isAllowed) {
                 callback(null, true);
