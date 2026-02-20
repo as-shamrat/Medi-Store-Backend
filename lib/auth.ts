@@ -8,6 +8,7 @@ import '../env'
 
 const isProd = process.env.NODE_ENV === "production";
 
+
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL as string,
     database: prismaAdapter(prisma, {
@@ -50,10 +51,10 @@ export const auth = betterAuth({
     },
     advanced: {
         cookiePrefix: "better-auth",
-        useSecureCookies: true,
+        useSecureCookies: isProd,        // true in production, false in dev
+        sameSite: isProd ? "none" : "lax", // none for cross-site
         crossSubDomainCookies: { enabled: false },
-        sameSite: "none",
-        disableCSRFCheck: true,
+        disableCSRFCheck: true,           // allow requests without Origin header (Postman/mobile)
     }
 
 
