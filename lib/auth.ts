@@ -50,9 +50,9 @@ export const auth = betterAuth({
     },
     advanced: {
         cookiePrefix: "better-auth",
-        useSecureCookies: isProd,
+        useSecureCookies: true,
         crossSubDomainCookies: { enabled: false },
-        sameSite: isProd ? "none" : "lax",
+        sameSite: "none",
         disableCSRFCheck: true,
     }
 
