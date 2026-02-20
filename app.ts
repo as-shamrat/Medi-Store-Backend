@@ -20,6 +20,7 @@ app.use(express.json())
 const allowedOrigins = [
     "http://localhost:3000",
     "https://medistore-client-chi.vercel.app",
+    "https://medistore-client-b33ip4g1u-mohammed-arif-shahriars-projects.vercel.app"
 ];
 
 // Regex for any Vercel preview URL
