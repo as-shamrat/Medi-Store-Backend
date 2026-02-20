@@ -13,8 +13,12 @@ import { globalErrorHandler } from './middleware/globalError';
 import { notFoundHandler } from './middleware/notFoundError';
 
 const app = express()
+
+app.use(express.json())
+
+
 const allowedOrigins = [
-    "https://medistore-client-chi.vercel.app",
+    "http://localhost:3000",
 ];
 
 
@@ -33,12 +37,6 @@ app.use(cors({
     exposedHeaders: ["Set-Cookie"],
 }));
 // Handle preflight requests
-app.options("*", cors({
-    origin: allowedOrigins,
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-    exposedHeaders: ["Set-Cookie"],
-}));
 
 
 
@@ -55,7 +53,7 @@ app.get('/api/auth/me', async (req: Request, res: Response) => {
     }
 })
 
-app.use(express.json())
+
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 

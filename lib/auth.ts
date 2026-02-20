@@ -6,19 +6,15 @@ import { prisma } from "./prisma";
 
 import '../env'
 
-
+const isProd = process.env.NODE_ENV === "production";
 
 export const auth = betterAuth({
-    baseURL: "https://medi-store-phi.vercel.app",
+    baseURL: process.env.BETTER_AUTH_URL as string,
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
     emailAndPassword: {
         enabled: true,
-    },
-    google: {
-        clientId: process.env.GOOGLE_CLIENT_ID as string,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
     user: {
         additionalFields: {
@@ -43,7 +39,9 @@ export const auth = betterAuth({
         }
     },
     trustedOrigins: [
-        "https://medistore-client-chi.vercel.app"],
+        process.env.FRONTEND_URL as string,
+        "http://localhost:3000"
+    ],
     session: {
         cookieCache: {
             enabled: true,
@@ -52,29 +50,31 @@ export const auth = betterAuth({
     },
     advanced: {
         cookiePrefix: "better-auth",
-        useSecureCookies: true,
+        useSecureCookies: isProd,
         crossSubDomainCookies: { enabled: false },
-        sameSite: "none", // 👈 required for cross-site cookies
+        sameSite: isProd ? "none" : "lax",
         disableCSRFCheck: true,
     }
 
-    // advanced: {
-    //     cookiePrefix: "better-auth",
-    //     useSecureCookies: true,
-    //     crossSubDomainCookies: {
-    //         enabled: false,
-    //     },
-    //     disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
-    // }
-
-    //   advanced: {
-    //     cookiePrefix: "better-auth",
-    //     useSecureCookies: process.env.NODE_ENV === "production",
-    //     crossSubDomainCookies: {
-    //       enabled: false,
-    //     },
-    //     disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
-    //   }
 
 
 });
+
+
+// advanced: {
+//     cookiePrefix: "better-auth",
+//     useSecureCookies: true,
+//     crossSubDomainCookies: {
+//         enabled: false,
+//     },
+//     disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+// }
+
+//   advanced: {
+//     cookiePrefix: "better-auth",
+//     useSecureCookies: process.env.NODE_ENV === "production",
+//     crossSubDomainCookies: {
+//       enabled: false,
+//     },
+//     disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+//   }
