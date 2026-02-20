@@ -26,6 +26,8 @@ const allowedOrigins = [
 // Regex for any Vercel preview URL
 const vercelRegex = /^https:\/\/medistore-client.*\.vercel\.app$/;
 
+app.set("trust proxy", 1);
+
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true); // Allow Postman or server-to-server requests
