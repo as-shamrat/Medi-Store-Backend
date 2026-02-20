@@ -7,6 +7,7 @@ import { prisma } from "./prisma";
 import '../env'
 
 const isProd = process.env.NODE_ENV === "production";
+console.log('isProd: ', isProd)
 
 
 export const auth = betterAuth({
