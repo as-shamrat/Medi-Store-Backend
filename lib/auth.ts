@@ -40,6 +40,7 @@ export const auth = betterAuth({
         }
     },
     trustedOrigins: [
+        "https://medistore-client-chi.vercel.app",
         process.env.FRONTEND_URL as string,
         "http://localhost:3000"
     ],
