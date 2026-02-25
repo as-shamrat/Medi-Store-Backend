@@ -17,35 +17,35 @@ const app = express()
 
 app.use(express.json())
 
-app.use(
-    cors({
-        origin: "http://localhost:3000",
-        credentials: true, // VERY IMPORTANT for cookies
-    })
-);
-// const allowedOrigins = [
-//     "http://localhost:3000",
-//     "https://medistore-client-chi.vercel.app",
-//     "https://medistore-client-b33ip4g1u-mohammed-arif-shahriars-projects.vercel.app",
-// ];
+// app.use(
+//     cors({
+//         origin: "http://localhost:3000",
+//         credentials: true, // VERY IMPORTANT for cookies
+//     })
+// );
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://medistore-client-chi.vercel.app",
+    "https://medistore-client-b33ip4g1u-mohammed-arif-shahriars-projects.vercel.app",
+];
 
-// // Regex for any Vercel preview URL
-// const vercelRegex = /^https:\/\/medistore-client.*\.vercel\.app$/;
+// Regex for any Vercel preview URL
+const vercelRegex = /^https:\/\/medistore-client.*\.vercel\.app$/;
 
-// app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 
-// app.use(cors({
-//     origin: (origin, callback) => {
-//         if (!origin) return callback(null, true); // Allow Postman or server-to-server requests
-//         const isAllowed = allowedOrigins.includes(origin) || vercelRegex.test(origin);
-//         if (isAllowed) return callback(null, true);
-//         callback(new Error(`Origin ${origin} not allowed by CORS`));
-//     },
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-//     exposedHeaders: ["Set-Cookie"],
-// }));
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true); // Allow Postman or server-to-server requests
+        const isAllowed = allowedOrigins.includes(origin) || vercelRegex.test(origin);
+        if (isAllowed) return callback(null, true);
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
+}));
 // Handle preflight requests
 
 
